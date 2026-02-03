@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chart.js Graph Engine Demo</title>
+  <link rel="stylesheet" href="../styles/graph-engine.css">
+  <link rel="stylesheet" href="../styles/graph-themes.css">
+  <style>
+    body { margin:0; padding:20px; background:var(--g-bg); color:var(--g-foreground); font-family:Inter, system-ui, sans-serif; }
+    .wrap { max-width:900px; margin:0 auto; }
+    .panel { height:360px; }
+    .controls { display:flex; gap:8px; margin-bottom:12px; }
+    button { padding:8px 10px; border-radius:8px; border:0; background:var(--g-accent); color:#04101a; cursor:pointer; font-weight:700; }
+  </style>
+</head>
+<body class="ge-theme-corporate">
+  <div class="wrap">
+    <div class="controls">
+      <button id="btn-update">Update</button>
+      <button id="btn-pal">Apply Palette</button>
+    </div>
+
+    <div class="ge-panel panel">
+      <div class="title">Chart.js — Sales</div>
+      <canvas id="chart-canvas" style="width:100%;height:100%"></canvas>
+    </div>
+  </div>
+
+  <!-- Chart.js v4 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+  <script src="../js/graph-engine.js"></script>
+  <script src="../js/graph-palettes.js"></script>
+  <script src="../js/chartjs-integration.js"></script>
+
+  <script>
+    function randomSeries(n=12, min=20, max=160){
+      return Array.from({length:n}, ()=>Math.round(min + Math.random()*(max-min)));
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const canvas = document.getElementById('chart-canvas');
+      const data = { values: randomSeries(12) };
+      const chart = Ge.chartjs.initChart(canvas, data, {
+        config: {
+          type: 'line'
+        }
+      });
+
+      document.getElementById('btn-update').addEventListener('click', ()=> {
+        const newData = { values: randomSeries(12, 10, 220) };
+        Ge.chartjs.updateChart(chart, newData, { duration: 900 });
+      });
+
+      document.getElementById('btn-pal').addEventListener('click', ()=> {
+        const base = ['#2563eb','#ff9f43','#7c5cff','#4dd0e1'][Math.floor(Math.random()*4)];
+        Ge.generateAndApply(base, { variant: 'triadic', lightSurface: false });
+      });
+
+      // listen for CSS var changes: an app could re-color datasets when palette changes
+      // Example: reapply dataset colors from CSS after palette change
+      const reapplyColors = ()=> {
+        const style = getComputedStyle(document.documentElement);
+        const accent = style.getPropertyValue('--g-accent').trim();
+        const accent2 = style.getPropertyValue('--g-accent-2').trim();
+        if (chart && chart.data && chart.data.datasets[0]) {
+          chart.data.datasets[0].borderColor = accent;
+          chart.data.datasets[0].backgroundColor = accent + '33';
+          chart.data.datasets[0].pointBackgroundColor = style.getPropertyValue('--g-surface').trim();
+          chart.update({duration: 450});
+        }
+      };
+      // naive: reapply on click palette button
+      document.getElementById('btn-pal').addEventListener('click', ()=> setTimeout(reapplyColors, 120));
+    });
+  </script>
+</body>
+</html>
