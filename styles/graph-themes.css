@@ -1,0 +1,80 @@
+/* Graph Engine — Theme Presets v1
+   Adds four polished theme classes you can apply to the root/container:
+   .ge-theme-dark, .ge-theme-light, .ge-theme-pastel, .ge-theme-corporate
+   Use by adding the class to <body> or the .ge-viewport container.
+
+   Example:
+     <body class="ge-theme-dark"> ... </body>
+*/
+:root {
+  /* fallback variables — kept minimal to ensure predictable behavior */
+  --g-accent-3: #9be7ff;
+  --g-accent-4: #2b6cb0;
+}
+
+/* Apply theme by putting class on top-level container (body or .ge-viewport) */
+.ge-theme-dark {
+  --g-bg: #0b1220;
+  --g-surface: color-mix(in srgb, white 3%, #06101a 97%);
+  --g-foreground: #e6eef8;
+  --g-muted: #95a3b8;
+  --g-accent: #4dd0e1;
+  --g-accent-2: #7c5cff;
+  --g-accent-3: #b3f0ff;
+  --g-accent-4: #2a3f6e;
+  --g-success: #46d58e;
+  --g-danger: #ff6b6b;
+  --g-grid: rgba(255,255,255,0.04);
+}
+
+.ge-theme-light {
+  --g-bg: #f5f7fb;
+  --g-surface: #ffffff;
+  --g-foreground: #0b1220;
+  --g-muted: #5b6b7a;
+  --g-accent: #2563eb;
+  --g-accent-2: #06b6d4;
+  --g-accent-3: #a5c8ff;
+  --g-accent-4: #08306b;
+  --g-success: #0f9d58;
+  --g-danger: #e53935;
+  --g-grid: rgba(11,17,32,0.04);
+  --g-shadow-1: 0 6px 18px rgba(6,12,24,0.06);
+  --g-soft-shadow: 0 8px 30px rgba(10,14,24,0.06);
+}
+
+.ge-theme-pastel {
+  --g-bg: #fcfbff;
+  --g-surface: color-mix(in srgb, #ffffff 85%, #f2f6ff 15%);
+  --g-foreground: #16202a;
+  --g-muted: #7a8796;
+  --g-accent: #ffb3c1;     /* soft pink */
+  --g-accent-2: #b6e3ff;   /* soft sky */
+  --g-accent-3: #ffd9a8;
+  --g-accent-4: #a29bff;
+  --g-success: #9be7c4;
+  --g-danger: #ff9aa2;
+  --g-grid: rgba(22,32,42,0.03);
+  --g-shadow-1: 0 10px 30px rgba(10,12,18,0.03);
+}
+
+.ge-theme-corporate {
+  --g-bg: #071428;
+  --g-surface: #07182b;
+  --g-foreground: #e8f2fb;
+  --g-muted: #8ea2b6;
+  --g-accent: #0ea5a5;
+  --g-accent-2: #1d4ed8;
+  --g-accent-3: #78f1e6;
+  --g-accent-4: #0b4d78;
+  --g-success: #2dd4bf;
+  --g-danger: #ff6b6b;
+  --g-grid: rgba(255,255,255,0.035);
+  --g-shadow-1: 0 12px 40px rgba(0,0,0,0.6);
+}
+
+/* Helper to toggle a theme quickly via JS:
+   document.documentElement.classList.add('ge-theme-dark')
+   Or on .ge-viewport container:
+   document.querySelector('.ge-viewport').classList.add('ge-theme-light')
+*/
