@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>D3 Graph Engine Demo</title>
+  <link rel="stylesheet" href="../styles/graph-engine.css">
+  <link rel="stylesheet" href="../styles/graph-themes.css">
+  <style>
+    body { margin: 0; background: var(--g-bg); color: var(--g-foreground); font-family: Inter, system-ui, sans-serif; padding: 24px; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    .controls { display:flex; gap:10px; margin-bottom:12px; }
+    button { padding:8px 12px; border-radius:8px; border:0; background:var(--g-accent); color:#04101a; cursor:pointer; font-weight:600; }
+  </style>
+</head>
+<body class="ge-theme-dark">
+  <div class="wrap">
+    <div class="controls">
+      <button id="btn-rand">Randomize</button>
+      <button id="btn-sine">Sine Wave</button>
+      <button id="btn-palette">Apply Palette</button>
+      <button id="btn-light">Toggle Light Theme Class</button>
+    </div>
+
+    <div class="ge-viewport">
+      <div class="ge-panel" id="panel-d3" style="padding:18px;">
+        <div class="title">D3 Smooth Line</div>
+        <div class="subtitle">Interactive updates + themeable</div>
+        <svg viewBox="0 0 800 320" preserveAspectRatio="none" role="img" aria-label="D3 line chart">
+          <defs>
+            <linearGradient id="geGradientStroke" x1="0" x2="1">
+              <stop offset="0%" stop-color="var(--g-accent)" stop-opacity="1"/>
+              <stop offset="100%" stop-color="var(--g-accent-2)" stop-opacity="1"/>
+            </linearGradient>
+            <linearGradient id="geAreaGradient" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="var(--g-accent)" stop-opacity="0.24"/>
+              <stop offset="100%" stop-color="var(--g-accent-2)" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- D3 v7 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="../js/graph-engine.js"></script>
+  <script src="../js/graph-palettes.js"></script>
+  <script src="../js/d3-integration.js"></script>
+
+  <script>
+    // Create initial sine-like dataset
+    function makeSine(n=14, amp=60, offset=160){
+      return Array.from({length:n}, (_,i) => ({x:i, y: Math.round(offset + Math.sin(i/2.2) * amp)}));
+    }
+    function makeRandom(n=14, min=40, max=260){
+      return Array.from({length:n}, (_,i) => ({x:i, y: Math.round(min + Math.random()*(max-min))}));
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=> {
+      const svgSelector = document.querySelector('#panel-d3 svg');
+      const initial = makeSine();
+      const chart = Ge.d3.createLineChart(svgSelector, initial, { duration: 900 });
+
+      document.getElementById('btn-rand').addEventListener('click', ()=> {
+        chart.update(makeRandom());
+      });
+      document.getElementById('btn-sine').addEventListener('click', ()=> {
+        chart.update(makeSine());
+      });
+
+      // Palette button — generates palette from user color, applies to root
+      document.getElementById('btn-palette').addEventListener('click', ()=> {
+        // pick a random base color
+        const bases = ['#4dd0e1','#7c5cff','#2563eb','#ffb3c1','#0ea5a5','#ff9f43'];
+        const base = bases[Math.floor(Math.random()*bases.length)];
+        Ge.generateAndApply(base, { variant: 'analogous', lightSurface: false });
+      });
+
+      // Toggle theme class for quick switch (keeps theme classes available)
+      let light = false;
+      document.getElementById('btn-light').addEventListener('click', ()=> {
+        light = !light;
+        Ge.toggleThemeClass(light ? 'ge-theme-light' : 'ge-theme-dark', document.body);
+      });
+    });
+  </script>
+</body>
+</html>
